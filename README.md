@@ -1,108 +1,43 @@
 # ICU Mortality Risk Prediction
 
-A supervised machine learning project that predicts **ICU patient mortality risk** using structured clinical data, leveraging regularized logistic regression to produce interpretable and robust risk estimates.
-
-This project implements an end-to-end predictive modeling pipeline focused on clinically meaningful evaluation, principled model selection, and transparency in high-stakes healthcare settings.
-
----
-
 ## Overview
 
-The system models the probability of in-hospital mortality for ICU patients based on features available during admission or early stay. It emphasizes:
+This project implements predictive modeling techniques to estimate **ICU patient mortality risk** using structured clinical data. The goal is to build, evaluate, and compare linear classification models that can identify high-risk patients based on observed features, with an emphasis on sound model selection, regularization, and performance evaluation.
 
-- Predictive performance under class imbalance
-- Statistical interpretability of learned parameters
-- Robust generalization through regularization and cross-validation
-
-The primary model used is **logistic regression with L2 (ridge) regularization**, a standard and well-understood approach in clinical risk modeling.
+The project was developed in the context of **EECS 445: Introduction to Machine Learning (University of Michigan)** and follows a rigorous experimental pipeline including feature preprocessing, model training, cross-validation, and metric-based evaluation.
 
 ---
 
-## Major Components
+## Models Used
 
-### Data Processing
-Responsible for preparing raw ICU patient data for modeling.
+The project primarily focuses on **linear models for binary classification**, including:
 
-Key responsibilities:
-- Handling missing values
-- Normalizing and scaling numerical features
-- Encoding categorical variables
-- Separating features from mortality labels
+- **Logistic Regression**
+  - Used as a probabilistic baseline model for mortality prediction
+  - Outputs calibrated probabilities for patient risk
+- **Ridge-Regularized Linear Models (L2 Regularization)**
+  - Controls overfitting in high-dimensional feature spaces
+  - Improves generalization and numerical stability
 
-All preprocessing steps ensure compatibility with linear models and stable optimization.
-
-### Predictive Model
-The core classifier is a regularized logistic regression model.
-
-Key characteristics:
-- Binary classification for mortality outcome
-- L2 (ridge) regularization to prevent overfitting
-- Probabilistic output for risk estimation
-- Convex optimization with guaranteed convergence
-
-The learned coefficients directly reflect feature associations with mortality risk.
-
-### Model Selection
-Hyperparameters are selected using **k-fold cross-validation** on the training data.
-
-Selection process:
-- Evaluate candidate regularization strengths
-- Average performance across folds
-- Choose the model maximizing cross-validation performance
-- Retrain on the full training set with selected parameters
-
-This ensures stable and reproducible performance estimates.
-
-### Evaluation
-Model performance is evaluated using clinically relevant metrics:
-
-- Accuracy
-- Precision
-- Recall (Sensitivity)
-- Specificity
-- F1-score
-- Area Under the ROC Curve (AUROC)
-
-AUROC is emphasized due to its threshold-independent nature and relevance for risk stratification.
+Regularization strength is selected using **k-fold cross-validation**, and models are evaluated using multiple clinically relevant metrics.
 
 ---
 
-## Modeling Approach
+## Dataset Description
 
-### Logistic Regression with Ridge Regularization
-The model estimates mortality probability using:
+The dataset consists of ICU patient records with engineered numerical features and a binary mortality label.
 
-p(y = 1 | x) = σ(θᵀx)
+- **Input features**: Clinical measurements, vitals, or derived indicators
+- **Target variable**:
+  - `1` → Patient did not survive
+  - `0` → Patient survived
 
-with an L2-regularized objective:
+The data is split into:
+- Training set
+- Validation (via cross-validation)
+- Test / held-out set
 
-min_θ  −∑ᵢ [yᵢ log pᵢ + (1 − yᵢ) log(1 − pᵢ)] + λ‖θ‖₂²
-
-Regularization stabilizes coefficient estimates, improves generalization, and reduces sensitivity to noisy or correlated features.
-
----
-
-## Handling Class Imbalance
-
-ICU mortality prediction often involves imbalanced outcomes. The project addresses this by:
-
-- Evaluating sensitivity and specificity explicitly
-- Emphasizing AUROC during model selection
-- Avoiding misleading reliance on accuracy alone
-
-This ensures performance remains meaningful in clinically realistic settings.
-
----
-
-## Interpretability
-
-A core design goal is interpretability:
-
-- Coefficient signs indicate whether a feature increases or decreases mortality risk
-- Coefficient magnitudes reflect relative importance
-- Regularization prevents extreme or unstable weights
-
-This allows the model to support downstream clinical analysis and auditing.
+All preprocessing steps are applied consistently across splits.
 
 ---
 
@@ -111,62 +46,94 @@ This allows the model to support downstream clinical analysis and auditing.
 ```
 .
 ├── data/
-│   ├── train.csv
-│   ├── test.csv
-├── preprocessing.py
-├── model.py
-├── evaluation.py
-├── main.py
+│ ├── dataset.csv # Main training dataset
+│ ├── heldout.csv # Held-out test set
+│ └── imbalanced.csv # Optional imbalanced dataset
+├── project.py # Main training and evaluation pipeline
+├── helper.py # Utility functions (metrics, data loading, CV)
+├── test_output.py # Output format validation
 └── README.md
 ```
 
-- preprocessing.py: Feature cleaning and transformation  
-- model.py: Logistic regression training and prediction  
-- evaluation.py: Metric computation and validation  
-- main.py: End-to-end execution pipeline  
+---
+
+## Feature Processing
+
+- Features are normalized or standardized when appropriate
+- Consistent preprocessing is enforced across training and evaluation
+- Regularization is critical due to the dimensionality of the feature space
 
 ---
 
-## Running the Project
+## Model Evaluation
 
-1. Install dependencies:
-```
-pip install numpy pandas scikit-learn
-```
+Models are evaluated using **k-fold cross-validation** with stratified splits to preserve class balance.
 
-3. Run the full pipeline:
-```
-python main.py
-```
+### Performance Metrics
 
-Performance metrics will be printed to standard output.
+The following metrics are implemented and reported:
 
----
+- Accuracy  
+- Precision  
+- Recall (Sensitivity)  
+- Specificity  
+- F1-Score  
+- AUROC (Area Under the ROC Curve)
 
-## Limitations
-
-- Linear decision boundary may not capture complex nonlinear interactions
-- Performance depends on feature quality and completeness
-- Not validated for real-world clinical deployment
+AUROC is emphasized due to its robustness under class imbalance and relevance in clinical risk prediction.
 
 ---
 
-## Future Extensions
+## Hyperparameter Selection
 
-- Nonlinear models (e.g., gradient-boosted trees)
-- Time-series modeling of vitals and labs
-- Model calibration analysis
-- External validation on independent ICU cohorts
+- Regularization strength is selected using grid search over logarithmic ranges
+- Cross-validation is implemented manually (not using sklearn’s built-in CV helpers)
+- The best hyperparameters are chosen based on mean validation performance
 
 ---
 
-## Summary
+## Handling Class Imbalance
 
-This project implements a clinically grounded ICU mortality risk predictor with:
+The project includes experiments with:
 
-- Regularized logistic regression for stability and interpretability
-- Cross-validated model selection
-- Comprehensive evaluation using appropriate metrics
-- A clean, modular pipeline suitable for research and extension
+- Balanced vs. imbalanced datasets
+- Adjusted class weights to penalize false negatives more heavily
+- Analysis of how weighting impacts sensitivity and specificity
 
-It demonstrates strong fundamentals in applied machine learning, healthcare modeling, and responsible evaluation for high-impact prediction tasks.
+This is especially important in ICU settings where **false negatives can be costly**.
+
+---
+
+## Results & Insights
+
+Key observations include:
+
+- Regularization significantly improves generalization
+- Ridge-regularized models are more stable in high-dimensional settings
+- AUROC is a more informative metric than accuracy for mortality prediction
+- Adjusting class weights can meaningfully improve sensitivity on imbalanced data
+
+---
+
+## Requirements
+
+The project was developed using the following environment:
+
+- Python 3.6+
+- NumPy
+- Pandas
+- scikit-learn
+- Matplotlib
+
+All dependencies can be installed via Anaconda.
+
+---
+
+## How to Run
+
+1. Install dependencies
+2. Place datasets in the `data/` directory
+3. Run the main script:
+
+```bash
+python project.py
