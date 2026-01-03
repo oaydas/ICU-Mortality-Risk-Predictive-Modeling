@@ -46,9 +46,8 @@ All preprocessing steps are applied consistently across splits.
 ```
 .
 ├── data/
-│ ├── dataset.csv # Main training dataset
-│ ├── heldout.csv # Held-out test set
-│ └── imbalanced.csv # Optional imbalanced dataset
+│ ├── Patient data sets numbered
+│ ├── labels.csv # data set labels
 ├── project.py # Main training and evaluation pipeline
 ├── helper.py # Utility functions (metrics, data loading, CV)
 ├── test_output.py # Output format validation
