@@ -108,15 +108,17 @@ This allows the model to support downstream clinical analysis and auditing.
 
 ## Project Structure
 
+```
 .
 ├── data/
-│ ├── train.csv
-│ ├── test.csv
+│   ├── train.csv
+│   ├── test.csv
 ├── preprocessing.py
 ├── model.py
 ├── evaluation.py
 ├── main.py
 └── README.md
+```
 
 - preprocessing.py: Feature cleaning and transformation  
 - model.py: Logistic regression training and prediction  
@@ -128,10 +130,14 @@ This allows the model to support downstream clinical analysis and auditing.
 ## Running the Project
 
 1. Install dependencies:
+```
 pip install numpy pandas scikit-learn
+```
 
 3. Run the full pipeline:
+```
 python main.py
+```
 
 Performance metrics will be printed to standard output.
 
