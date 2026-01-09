@@ -4,8 +4,6 @@
 
 This project implements predictive modeling techniques to estimate **ICU patient mortality risk** using structured clinical data. The goal is to build, evaluate, and compare linear classification models that can identify high-risk patients based on observed features, with an emphasis on sound model selection, regularization, and performance evaluation.
 
-The project was developed in the context of **EECS 445: Introduction to Machine Learning (University of Michigan)** and follows a rigorous experimental pipeline including feature preprocessing, model training, cross-validation, and metric-based evaluation.
-
 ---
 
 ## Models Used
