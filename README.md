@@ -46,7 +46,7 @@ All preprocessing steps are applied consistently across splits.
 ├── data/
 │ ├── Patient data sets numbered
 │ ├── labels.csv # data set labels
-├── project.py # Main training and evaluation pipeline
+├── main.py # Main training and evaluation pipeline
 ├── helper.py # Utility functions (metrics, data loading, CV)
 ├── test_output.py # Output format validation
 └── README.md
@@ -133,4 +133,4 @@ All dependencies can be installed via Anaconda.
 3. Run the main script:
 
 ```bash
-python project.py
+python main.py
